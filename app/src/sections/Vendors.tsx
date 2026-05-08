@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { VendorCategory } from '@/lib/types';
@@ -13,6 +13,11 @@ export default function Vendors({ vendorCategories }: VendorsProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [visibleCategoryCount, setVisibleCategoryCount] = useState(1);
+
+  useEffect(() => {
+    setVisibleCategoryCount(1);
+  }, [vendorCategories]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,7 +49,10 @@ export default function Vendors({ vendorCategories }: VendorsProps) {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [vendorCategories]);
+  }, [vendorCategories, visibleCategoryCount]);
+
+  const visibleCategories = vendorCategories.slice(0, visibleCategoryCount);
+  const hasMoreCategories = visibleCategoryCount < vendorCategories.length;
 
   return (
     <section
@@ -61,16 +69,17 @@ export default function Vendors({ vendorCategories }: VendorsProps) {
             Our Preferred Vendors
           </h2>
           <p className="text-muted-foreground mt-6 max-w-2xl mx-auto font-['Inter']">
-            If you would like to connect with anyone, please click their name for a website or email.
+            If you would like to connect with anyone, please click their name for a website.
           </p>
         </div>
 
         <div ref={listRef} className="space-y-8">
-          {vendorCategories.map((category) => (
+          {visibleCategories.map((category) => (
             <div key={category._id} className="vendor-category">
               <h3 className="text-cream text-lg md:text-xl mb-4 pb-2 border-b border-white/10">
                 {category.name}
               </h3>
+
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(category.vendors ?? []).map((vendor, idx) => (
                   <div
@@ -91,16 +100,39 @@ export default function Vendors({ vendorCategories }: VendorsProps) {
                         vendor.name
                       )}
                     </h4>
-                    <p className="text-cool-gray text-xs mb-2 font-['Inter']">{vendor.phone}</p>
-                    <p className="text-muted-foreground text-xs leading-relaxed font-['Inter']">
-                      {vendor.description}
-                    </p>
+
+                    {vendor.phone && (
+                      <p className="text-cool-gray text-xs mb-2 font-['Inter']">
+                        {vendor.phone}
+                      </p>
+                    )}
+
+                    {vendor.description && (
+                      <p className="text-muted-foreground text-xs leading-relaxed font-['Inter']">
+                        {vendor.description}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
+
+        {hasMoreCategories && (
+          <div className="mt-16 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setVisibleCategoryCount((prev) => prev + 1)}
+              className="group flex flex-col items-center gap-4 text-warm-beige text-xs tracking-[0.2em] uppercase font-['Inter']"
+            >
+              <span className="border-b border-warm-beige/30 pb-1 group-hover:border-warm-beige transition-colors">
+                See More Vendors
+              </span>
+              <div className="w-px h-12 bg-gradient-to-b from-warm-beige/50 to-transparent transition-all group-hover:h-16" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

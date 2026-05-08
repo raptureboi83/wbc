@@ -65,6 +65,7 @@ export interface Film {
   blurb: string
   videoUrl: string
   posterUrl?: string
+  posterAlt?: string
   order: number
 }
 

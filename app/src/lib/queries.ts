@@ -50,6 +50,7 @@ export const filmsQuery = groq`
     blurb,
     videoUrl,
     "posterUrl": poster.asset->url,
+    "posterAlt": poster.alt,
     order
   }
 `;

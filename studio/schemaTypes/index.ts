@@ -3,7 +3,7 @@ import { aboutSection } from './aboutSection'
 import { contactSection } from './contactSection'
 import { siteSettings } from './siteSettings'
 import { socialLink } from './socialLink'
-import { packageType } from './package'
+import { packagesSectionType } from './package'
 import { testimonial } from './testimonial'
 import { film } from './film'
 import { vendorCategory } from './vendorCategory'
@@ -14,7 +14,7 @@ export const schemaTypes = [
   contactSection,
   siteSettings,
   socialLink,
-  packageType,
+  packagesSectionType,
   testimonial,
   film,
   vendorCategory,

@@ -1,4 +1,4 @@
-import groq from 'groq';
+import groq from 'groq'
 
 export const heroSectionQuery = groq`
   *[_type == "heroSection"][0]{
@@ -9,7 +9,7 @@ export const heroSectionQuery = groq`
     buttonUrl,
     "backgroundImageUrl": backgroundImage.asset->url
   }
-`;
+`
 
 export const aboutSectionQuery = groq`
   *[_type == "aboutSection"][0]{
@@ -18,18 +18,23 @@ export const aboutSectionQuery = groq`
     paragraphs,
     "imageUrl": image.asset->url
   }
-`;
+`
 
 export const packagesQuery = groq`
-  *[_type == "package"] | order(order asc){
+  *[_type == "packagesSection"][0]{
     _id,
     title,
-    price,
-    description,
-    features,
-    order
+    boxes[]{
+      _key,
+      _type,
+      title,
+      price,
+      description,
+      features,
+      items
+    }
   }
-`;
+`
 
 export const testimonialsQuery = groq`
   *[_type == "testimonial"] | order(order asc){
@@ -39,7 +44,7 @@ export const testimonialsQuery = groq`
     role,
     order
   }
-`;
+`
 
 export const filmsQuery = groq`
   *[_type == "film"] | order(order asc){
@@ -53,7 +58,7 @@ export const filmsQuery = groq`
     "posterAlt": poster.alt,
     order
   }
-`;
+`
 
 export const vendorCategoriesQuery = groq`
   *[_type == "vendorCategory"] | order(order asc){
@@ -67,7 +72,7 @@ export const vendorCategoriesQuery = groq`
       website
     }
   }
-`;
+`
 
 export const contactSectionQuery = groq`
   *[_type == "contactSection"][0]{
@@ -81,7 +86,7 @@ export const contactSectionQuery = groq`
     helperText,
     footerCopyright
   }
-`;
+`
 
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0]{
@@ -95,4 +100,4 @@ export const siteSettingsQuery = groq`
       enabled
     }
   }
-`;
+`

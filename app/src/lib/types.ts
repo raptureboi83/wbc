@@ -40,13 +40,28 @@ export interface SiteSettings {
   socialLinks: SocialLink[]
 }
 
-export interface Package {
-  _id: string
+export interface PackageBox {
+  _key: string
+  _type: 'packageBox'
   title: string
-  price: string
-  description: string
+  price?: string
+  description?: string
   features?: string[]
-  order: number
+}
+
+export interface FullSpanBox {
+  _key: string
+  _type: 'fullSpanBox'
+  title: string
+  items?: string[]
+}
+
+export type PackageItem = PackageBox | FullSpanBox
+
+export interface PackagesSection {
+  _id: string
+  title?: string
+  boxes?: PackageItem[]
 }
 
 export interface Testimonial {

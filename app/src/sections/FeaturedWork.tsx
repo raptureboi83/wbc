@@ -66,11 +66,12 @@ export default function FeaturedWork({ films, mode }: FeaturedWorkProps) {
 
   return (
     <>
-      <section
-        id="films"
-        ref={sectionRef}
-        className="w-full py-24 md:py-32 px-6 md:px-10 bg-dark-bg"
-      >
+<section
+  id="films"
+  ref={sectionRef}
+  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+  style={{ backgroundColor: '#202020' }}
+>
         <div className="max-w-7xl mx-auto">
           <div ref={headerRef} className="mb-16">
             <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">

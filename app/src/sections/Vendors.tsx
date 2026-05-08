@@ -55,11 +55,12 @@ export default function Vendors({ vendorCategories }: VendorsProps) {
   const hasMoreCategories = visibleCategoryCount < vendorCategories.length;
 
   return (
-    <section
-      id="vendors"
-      ref={sectionRef}
-      className="w-full py-24 md:py-32 px-6 md:px-10 bg-elevated-bg"
-    >
+<section
+  id="vendors"
+  ref={sectionRef}
+  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+  style={{ backgroundColor: '#202020' }}
+>
       <div className="max-w-6xl mx-auto">
         <div ref={headerRef} className="text-center mb-16 md:mb-20">
           <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">

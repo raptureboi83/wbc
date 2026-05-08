@@ -50,11 +50,12 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
   }, [visibleTestimonials]);
 
   return (
-    <section
-      id="testimonials"
-      ref={sectionRef}
-      className="w-full py-24 md:py-32 px-6 md:px-10 bg-elevated-bg"
-    >
+<section
+  id="testimonials"
+  ref={sectionRef}
+  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+  style={{ backgroundColor: '#181818' }}
+>
       <div className="max-w-7xl mx-auto">
         <div ref={headerRef} className="text-center mb-20">
           <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">

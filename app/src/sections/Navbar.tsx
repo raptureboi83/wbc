@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { SiteSettings } from '@/lib/types';
 import SocialIcons from '@/components/socialIcons';
 
@@ -7,6 +8,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ siteSettings }: NavbarProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -29,12 +32,29 @@ export default function Navbar({ siteSettings }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+  const goToSection = (id: string) => {
+    if (location.pathname === '/') {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      navigate(`/#${id}`);
     }
   };
+
+const handleLogoClick = () => {
+  if (location.pathname === '/') {
+    const hero = document.getElementById('hero');
+    if (hero) {
+      hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  } else {
+    navigate('/#hero');
+  }
+};
 
   const siteName = siteSettings?.siteName || 'Weddings By Christian';
   const brandingMode = siteSettings?.brandingMode || 'text';
@@ -49,9 +69,9 @@ export default function Navbar({ siteSettings }: NavbarProps) {
     >
       <button
         type="button"
-        onClick={() => scrollTo('hero')}
+        onClick={handleLogoClick}
         className="cursor-pointer"
-        aria-label="Back to top"
+        aria-label="Back to home"
       >
         {brandingMode === 'logo' && logoUrl ? (
           <img
@@ -67,15 +87,17 @@ export default function Navbar({ siteSettings }: NavbarProps) {
       </button>
 
       <div className="hidden md:flex items-center gap-8">
-        {[
-          { label: 'Films', id: 'films' },
-          { label: 'Services', id: 'packages' },
-          { label: 'About', id: 'about' },
-          { label: 'Contact', id: 'contact' },
-        ].map((item) => (
+{[
+  { label: 'About', id: 'about' },
+  { label: 'Films', id: 'films' },
+  { label: 'Packages', id: 'packages' },
+  { label: 'Testimonials', id: 'testimonials' },
+  { label: 'Vendors', id: 'vendors' },
+  { label: 'Contact', id: 'contact' },
+].map((item) => (
           <button
             key={item.id}
-            onClick={() => scrollTo(item.id)}
+            onClick={() => goToSection(item.id)}
             className="text-xs tracking-[0.1em] uppercase text-muted-foreground hover:text-warm-beige transition-colors duration-300 font-['Inter']"
           >
             {item.label}

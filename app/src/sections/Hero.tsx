@@ -1,16 +1,26 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import type { HeroSection } from '@/lib/types';
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import type { HeroSection } from '@/lib/types'
 
 interface HeroProps {
-  data: HeroSection | null;
+  data: HeroSection | null
 }
 
 export default function Hero({ data }: HeroProps) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const labelRef = useRef<HTMLSpanElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  const ctaRef = useRef<HTMLAnchorElement>(null)
+
+  const backgroundImage = data?.backgroundImageUrl || '/hero.jpg'
+  const headline = data?.headline || 'Capturing\nYour Forever'
+  const subtext = data?.subtext || 'A Love Story'
+
+  const buttonLabel = data?.buttonLabel?.trim() ?? ''
+  const buttonUrl = data?.buttonUrl?.trim() ?? ''
+  const showCta = buttonLabel !== ''
+  const finalButtonUrl = buttonUrl !== '' ? buttonUrl : '#films'
+  const isExternalLink = finalButtonUrl.startsWith('http')
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -20,32 +30,33 @@ export default function Hero({ data }: HeroProps) {
         duration: 1,
         delay: 0.3,
         ease: 'power3.out',
-      });
+      })
+
       gsap.to(headingRef.current, {
         opacity: 1,
         y: 0,
         duration: 1.2,
         delay: 0.5,
         ease: 'power3.out',
-      });
-      gsap.to(ctaRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        delay: 0.8,
-        ease: 'power3.out',
-      });
-    }, sectionRef);
+      })
 
-    return () => ctx.revert();
-  }, []);
+      if (showCta && ctaRef.current) {
+        gsap.fromTo(
+          ctaRef.current,
+          { opacity: 0, y: 16 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            delay: 0.8,
+            ease: 'power3.out',
+          }
+        )
+      }
+    }, sectionRef)
 
-  const backgroundImage = data?.backgroundImageUrl || '/hero.jpg';
-  const headline = data?.headline || 'Capturing\nYour Forever';
-  const subtext = data?.subtext || 'A Love Story';
-  const buttonLabel = data?.buttonLabel || 'Watch Our Reel';
-  const buttonUrl = data?.buttonUrl || '#films';
-  const isExternalLink = buttonUrl.startsWith('http');
+    return () => ctx.revert()
+  }, [showCta, buttonLabel, finalButtonUrl])
 
   return (
     <section
@@ -75,23 +86,25 @@ export default function Hero({ data }: HeroProps) {
           {headline}
         </h1>
 
-        <a
-          href={buttonUrl}
-          target={isExternalLink ? '_blank' : undefined}
-          rel={isExternalLink ? 'noopener noreferrer' : undefined}
-          className="absolute bottom-16 md:bottom-20 right-6 md:right-10 flex items-center gap-3 opacity-0 translate-y-4 cursor-pointer group"
-          ref={ctaRef}
-        >
-          <span className="text-warm-beige text-sm tracking-wide font-['Inter'] underline underline-offset-4 decoration-warm-beige/50 group-hover:decoration-warm-beige transition-colors">
-            {buttonLabel}
-          </span>
-          <div className="w-8 h-8 rounded-full border border-warm-beige/50 flex items-center justify-center group-hover:border-warm-beige transition-colors">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-warm-beige">
-              <path d="M3 2L9 6L3 10V2Z" fill="currentColor" />
-            </svg>
-          </div>
-        </a>
+        {showCta && (
+          <a
+            href={finalButtonUrl}
+            target={isExternalLink ? '_blank' : undefined}
+            rel={isExternalLink ? 'noopener noreferrer' : undefined}
+            className="absolute bottom-16 md:bottom-20 right-6 md:right-10 flex items-center gap-3 cursor-pointer group"
+            ref={ctaRef}
+          >
+            <span className="text-warm-beige text-sm tracking-wide font-['Inter'] underline underline-offset-4 decoration-warm-beige/50 group-hover:decoration-warm-beige transition-colors">
+              {buttonLabel}
+            </span>
+            <div className="w-8 h-8 rounded-full border border-warm-beige/50 flex items-center justify-center group-hover:border-warm-beige transition-colors">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-warm-beige">
+                <path d="M3 2L9 6L3 10V2Z" fill="currentColor" />
+              </svg>
+            </div>
+          </a>
+        )}
       </div>
     </section>
-  );
+  )
 }

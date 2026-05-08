@@ -7,7 +7,7 @@ export const film = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Couple Name / Film Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
@@ -15,16 +15,20 @@ export const film = defineType({
       name: 'eventDate',
       title: 'Event Date',
       type: 'string',
+      description: 'Example: September 14, 2025',
     }),
     defineField({
       name: 'location',
-      title: 'Location',
+      title: 'Venue / Location',
       type: 'string',
+      description: 'Example: Barrie, Ontario or Belcroft Estate',
     }),
     defineField({
       name: 'blurb',
-      title: 'Blurb',
+      title: 'Paragraph / Description',
       type: 'text',
+      rows: 4,
+      description: 'Short paragraph shown with the film.',
     }),
     defineField({
       name: 'videoUrl',
@@ -35,11 +39,20 @@ export const film = defineType({
     }),
     defineField({
       name: 'poster',
-      title: 'Poster Image',
+      title: 'Thumbnail / Poster Image',
       type: 'image',
       options: {
         hotspot: true,
       },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description: 'Describe the thumbnail image for accessibility.',
+        }),
+      ],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'order',

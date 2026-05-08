@@ -9,7 +9,7 @@ interface PackagesProps {
   packages: Package[];
 }
 
-export default function Packages({ packages: packagesData }: PackagesProps) {
+export default function Packages({ packages }: PackagesProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -37,57 +37,73 @@ export default function Packages({ packages: packagesData }: PackagesProps) {
           opacity: 0,
           y: 60,
           duration: 1,
-          stagger: 0.2,
+          stagger: 0.15,
           ease: 'power3.out',
         });
       }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [packagesData]);
+  }, [packages]);
 
   return (
-    <section
-      id="packages"
-      ref={sectionRef}
-      className="w-full py-24 md:py-32 px-6 md:px-10 bg-elevated-bg"
-    >
-      <div className="max-w-6xl mx-auto">
-        <div ref={headerRef} className="text-center mb-16 md:mb-20">
+<section
+  id="packages"
+  ref={sectionRef}
+  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+  style={{ backgroundColor: '#111111' }}
+>
+      <div className="max-w-7xl mx-auto">
+        <div ref={headerRef} className="text-center mb-16">
           <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">
             Services
           </span>
           <h2 className="text-warm-beige text-3xl md:text-4xl lg:text-5xl mt-4 leading-[1.1]">
-            Choose a Package That's<br />Right for Your Special Day
+            Wedding Film Collections
           </h2>
-          <p className="text-muted-foreground mt-6 max-w-2xl mx-auto font-['Inter']">
-            With two set and available custom packages to choose from, your special day can be captured no matter what your budget is. We can also develop additional custom packages together to suit your needs.
-          </p>
         </div>
 
-        <div ref={cardsRef} className="grid md:grid-cols-2 gap-6 md:gap-8 justify-center">
-          {packagesData.map((pkg) => (
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10"
+        >
+          {packages.map((pkg) => (
             <div
               key={pkg._id}
-              className="package-card p-8 md:p-10 rounded-sm border border-white/10 bg-dark-bg/50"
+              className="package-card border border-white/10 p-8 md:p-10 bg-dark-bg/40"
             >
-              <div className="flex items-baseline justify-between mb-4">
-                <h3 className="text-warm-beige text-xl md:text-2xl">{pkg.title}</h3>
-                <span className="text-cream text-2xl md:text-3xl font-['Playfair_Display']">{pkg.price}</span>
+              <div className="flex items-start justify-between gap-6 mb-8">
+                <div>
+                  <h3 className="text-warm-beige text-2xl md:text-3xl font-light">
+                    {pkg.title}
+                  </h3>
+                  {pkg.price && (
+                    <p className="text-cool-gray text-sm uppercase tracking-[0.1em] mt-3 font-['Inter']">
+                      {pkg.price}
+                    </p>
+                  )}
+                </div>
               </div>
-              <p className="text-muted-foreground text-sm mb-6 font-['Inter']">{pkg.description}</p>
-              <ul className="space-y-3">
-                {(pkg.features ?? []).map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-warm-beige/80 text-sm font-['Inter']">
-                    <span className="text-cream mt-1">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <path d="M2 7L5.5 10.5L12 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+
+              {pkg.description && (
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-8 font-['Inter']">
+                  {pkg.description}
+                </p>
+              )}
+
+              {pkg.features?.length ? (
+                <ul className="space-y-3">
+                  {pkg.features.map((feature, index) => (
+                    <li
+                      key={index}
+                      className="text-warm-beige text-sm md:text-base font-['Inter'] flex items-start gap-3"
+                    >
+                      <span className="text-cool-gray mt-[2px]">+</span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
           ))}
         </div>

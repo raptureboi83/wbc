@@ -1,27 +1,34 @@
-import { useLayoutEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLayoutEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+const NAV_OFFSET = 80; // adjust if your navbar is taller/shorter
 
 export default function ScrollToTop() {
-  const { pathname, hash } = useLocation()
+  const { pathname, hash } = useLocation();
 
   useLayoutEffect(() => {
     if (hash) {
-      const id = hash.replace('#', '')
+      const id = hash.replace('#', '');
 
-      const scrollToHash = () => {
-        const element = document.getElementById(id)
-
+      setTimeout(() => {
+        const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-      }
+          const rect = element.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetY = rect.top + scrollTop - NAV_OFFSET;
 
-      const timeout = window.setTimeout(scrollToHash, 100)
-      return () => window.clearTimeout(timeout)
+          window.scrollTo({
+            top: targetY,
+            behavior: 'smooth',
+          });
+        }
+      }, 50);
+
+      return;
     }
 
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [pathname, hash])
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname, hash]);
 
-  return null
+  return null;
 }

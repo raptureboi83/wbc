@@ -67,7 +67,8 @@ export default function Contact({ data, siteSettings }: ContactProps) {
     <footer
       id="contact"
       ref={sectionRef}
-      className="w-full py-24 md:py-32 px-6 md:px-10 bg-dark-bg"
+      className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+      style={{ backgroundColor: '#020202' }}
     >
       <div ref={contentRef} className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-24">
@@ -210,7 +211,10 @@ export default function Contact({ data, siteSettings }: ContactProps) {
                     />
                   </div>
 
-                  <div className="g-recaptcha" data-sitekey="6LfQovEqAAAAABN5jQ7gDmJzVWi6KXB7DBnYKRlv"></div>
+                  <div
+                    className="g-recaptcha"
+                    data-sitekey="6LfQovEqAAAAABN5jQ7gDmJzVWi6KXB7DBnYKRlv"
+                  ></div>
 
                   <button
                     type="submit"
@@ -225,17 +229,30 @@ export default function Contact({ data, siteSettings }: ContactProps) {
         </div>
 
         <div className="pt-12 border-t border-white/10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-cool-gray text-xs font-['Inter']">
-              {footerCopyright}
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-6">
+            <div className="text-center md:text-left">
+              <a
+                href="https://wbc.sanity.studio/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cool-gray text-xs font-['Inter'] hover:text-warm-beige transition-colors"
+              >
+                {footerCopyright}
+              </a>
             </div>
-            <button
-              onClick={scrollToTop}
-              className="text-warm-beige text-xs tracking-[0.1em] uppercase font-['Inter'] hover:text-cream transition-colors cursor-pointer"
-            >
-              {siteName}
-            </button>
-            <SocialIcons socialLinks={siteSettings?.socialLinks || []} />
+
+            <div className="text-center">
+              <button
+                onClick={scrollToTop}
+                className="text-warm-beige text-xs tracking-[0.1em] uppercase font-['Inter'] hover:text-cream transition-colors cursor-pointer"
+              >
+                {siteName}
+              </button>
+            </div>
+
+            <div className="flex justify-center md:justify-end">
+              <SocialIcons socialLinks={siteSettings?.socialLinks || []} />
+            </div>
           </div>
         </div>
       </div>

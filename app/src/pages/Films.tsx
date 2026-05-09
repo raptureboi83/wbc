@@ -31,24 +31,7 @@ export default function FilmsPage() {
   }, [])
 
   const handleReachOut = () => {
-    navigate('/')
-
-    setTimeout(() => {
-      const contactSection = document.getElementById('contact')
-
-      if (contactSection) {
-        const navbarOffset = 110
-        const top =
-          contactSection.getBoundingClientRect().top +
-          window.scrollY -
-          navbarOffset
-
-        window.scrollTo({
-          top,
-          behavior: 'smooth',
-        })
-      }
-    }, 150)
+    navigate('/#contact')
   }
 
   return (

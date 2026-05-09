@@ -55,6 +55,7 @@ export default function Home() {
             client.fetch(siteSettingsQuery),
           ])
 
+
         setHeroData(hero)
         setAboutData(about)
         setPackagesData(packages)

@@ -60,10 +60,9 @@ export const filmsQuery = groq`
 `
 
 export const vendorCategoriesQuery = groq`
-  *[_type == "vendorCategory"] | order(order asc){
+  *[_type == "vendorCategory"] | order(orderRank){
     _id,
     name,
-    order,
     vendors[]{
       name,
       phone,
@@ -98,5 +97,19 @@ export const siteSettingsQuery = groq`
       url,
       enabled
     }
+  }
+`
+
+export const filmBySlugQuery = groq`
+  *[_type == "film" && slug.current == $slug][0]{
+    _id,
+    title,
+    slug,
+    eventDate,
+    location,
+    blurb,
+    videoUrl,
+    "posterUrl": poster.asset->url,
+    "posterAlt": poster.alt
   }
 `

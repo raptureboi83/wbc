@@ -77,9 +77,21 @@ export default defineConfig({
               context,
             }),
 
+            orderableDocumentListDeskItem({
+              type: 'vendorCategory',
+              title: 'Vendor Categories',
+              S,
+              context,
+            }),
+
             ...S.documentTypeListItems().filter((listItem) => {
               const id = listItem.getId() || ''
-              return !singletonTypes.has(id) && id !== 'film' && id !== 'testimonial'
+              return (
+                !singletonTypes.has(id) &&
+                id !== 'film' &&
+                id !== 'testimonial' &&
+                id !== 'vendorCategory'
+              )
             }),
           ]),
     }),

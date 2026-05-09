@@ -82,6 +82,9 @@ export interface Film {
   posterUrl?: string
   posterAlt?: string
   order: number
+  slug?: {
+    current?: string
+  }
 }
 
 export interface Vendor {

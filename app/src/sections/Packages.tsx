@@ -33,30 +33,36 @@ export default function Packages({ packages }: PackagesProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 40,
-        duration: 1.2,
-        ease: 'power3.out',
-      })
-
-      const cards = cardsRef.current?.querySelectorAll('.package-card')
-      if (cards) {
-        gsap.from(cards, {
+      if (headerRef.current && sectionRef.current) {
+        gsap.from(headerRef.current, {
           scrollTrigger: {
-            trigger: cardsRef.current,
-            start: 'top 75%',
+            trigger: sectionRef.current,
+            start: 'top 80%',
           },
           opacity: 0,
-          y: 60,
-          duration: 1,
-          stagger: 0.15,
+          y: 40,
+          duration: 1.2,
           ease: 'power3.out',
         })
+      }
+
+      const container = cardsRef.current
+      if (container) {
+        const cards = container.querySelectorAll('.package-card')
+        
+        if (cards.length) {
+          gsap.from(cards, {
+            scrollTrigger: {
+              trigger: container,
+              start: 'top 75%',
+            },
+            opacity: 0,
+            y: 60,
+            duration: 1,
+            stagger: 0.15,
+            ease: 'power3.out',
+          })
+        }
       }
     }, sectionRef)
 

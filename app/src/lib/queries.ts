@@ -37,17 +37,16 @@ export const packagesQuery = groq`
 `
 
 export const testimonialsQuery = groq`
-  *[_type == "testimonial"] | order(order asc){
+  *[_type == "testimonial"] | order(orderRank){
     _id,
     quote,
     name,
-    role,
-    order
+    role
   }
 `
 
 export const filmsQuery = groq`
-  *[_type == "film"] | order(order asc){
+  *[_type == "film"] | order(orderRank){
     _id,
     title,
     eventDate,
@@ -56,7 +55,7 @@ export const filmsQuery = groq`
     videoUrl,
     "posterUrl": poster.asset->url,
     "posterAlt": poster.alt,
-    order
+    slug
   }
 `
 

@@ -19,30 +19,36 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 40,
-        duration: 1.2,
-        ease: 'power3.out',
-      });
-
-      const cards = gridRef.current?.querySelectorAll('.testimonial-card');
-      if (cards) {
-        gsap.from(cards, {
+      if (headerRef.current && sectionRef.current) {
+        gsap.from(headerRef.current, {
           scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top 75%',
+            trigger: sectionRef.current,
+            start: 'top 80%',
           },
           opacity: 0,
-          y: 50,
-          duration: 1,
-          stagger: 0.1,
+          y: 40,
+          duration: 1.2,
           ease: 'power3.out',
         });
+      }
+
+      const grid = gridRef.current;
+      if (grid) {
+        const cards = grid.querySelectorAll('.testimonial-card');
+        
+        if (cards.length) {
+          gsap.from(cards, {
+            scrollTrigger: {
+              trigger: grid,
+              start: 'top 75%',
+            },
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            stagger: 0.1,
+            ease: 'power3.out',
+          });
+        }
       }
     }, sectionRef);
 
@@ -50,12 +56,12 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
   }, [visibleTestimonials]);
 
   return (
-<section
-  id="testimonials"
-  ref={sectionRef}
-  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
-  style={{ backgroundColor: '#181818' }}
->
+    <section
+      id="testimonials"
+      ref={sectionRef}
+      className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+      style={{ backgroundColor: '#181818' }}
+    >
       <div className="max-w-7xl mx-auto">
         <div ref={headerRef} className="text-center mb-20">
           <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">

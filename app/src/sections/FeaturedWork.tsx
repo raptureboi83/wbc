@@ -21,36 +21,45 @@ export default function FeaturedWork({ films, mode }: FeaturedWorkProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 40,
-        duration: 1.2,
-        ease: 'power3.out',
-      });
+      const section = sectionRef.current;
+      const header = headerRef.current;
+      const grid = gridRef.current;
+      const button = buttonRef.current;
 
-      const cards = gridRef.current?.querySelectorAll('.film-card');
-      if (cards) {
-        gsap.from(cards, {
+      if (header && section) {
+        gsap.from(header, {
           scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top 75%',
+            trigger: section,
+            start: 'top 80%',
           },
           opacity: 0,
-          y: 60,
-          duration: 1,
-          stagger: 0.15,
+          y: 40,
+          duration: 1.2,
           ease: 'power3.out',
         });
       }
 
-      if (buttonRef.current) {
-        gsap.from(buttonRef.current, {
+      if (grid) {
+        const cards = grid.querySelectorAll('.film-card');
+        if (cards.length) {
+          gsap.from(cards, {
+            scrollTrigger: {
+              trigger: grid,
+              start: 'top 75%',
+            },
+            opacity: 0,
+            y: 60,
+            duration: 1,
+            stagger: 0.15,
+            ease: 'power3.out',
+          });
+        }
+      }
+
+      if (button) {
+        gsap.from(button, {
           scrollTrigger: {
-            trigger: buttonRef.current,
+            trigger: button,
             start: 'top 90%',
           },
           opacity: 0,
@@ -66,12 +75,12 @@ export default function FeaturedWork({ films, mode }: FeaturedWorkProps) {
 
   return (
     <>
-<section
-  id="films"
-  ref={sectionRef}
-  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
-  style={{ backgroundColor: '#202020' }}
->
+      <section
+        id="films"
+        ref={sectionRef}
+        className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+        style={{ backgroundColor: '#202020' }}
+      >
         <div className="max-w-7xl mx-auto">
           <div ref={headerRef} className="mb-16">
             <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">

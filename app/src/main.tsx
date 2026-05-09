@@ -4,9 +4,14 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App'
 
+const routerBase =
+  import.meta.env.PROD && window.location.pathname.startsWith('/new')
+    ? '/new'
+    : '/'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={routerBase}>
       <App />
     </BrowserRouter>
   </StrictMode>,

@@ -12,7 +12,7 @@ export default function Hero({ data }: HeroProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const ctaRef = useRef<HTMLAnchorElement>(null)
 
-  const backgroundImage = data?.backgroundImageUrl || '/hero.jpg'
+  const backgroundImage = data?.backgroundImageUrl?.trim() ?? ''
   const headline = data?.headline || 'Capturing\nYour Forever'
   const subtext = data?.subtext || 'A Love Story'
 
@@ -24,21 +24,25 @@ export default function Hero({ data }: HeroProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.to(labelRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        delay: 0.3,
-        ease: 'power3.out',
-      })
+      if (labelRef.current) {
+        gsap.to(labelRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          delay: 0.3,
+          ease: 'power3.out',
+        })
+      }
 
-      gsap.to(headingRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        delay: 0.5,
-        ease: 'power3.out',
-      })
+      if (headingRef.current) {
+        gsap.to(headingRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          delay: 0.5,
+          ease: 'power3.out',
+        })
+      }
 
       if (showCta && ctaRef.current) {
         gsap.fromTo(
@@ -62,25 +66,28 @@ export default function Hero({ data }: HeroProps) {
     <section
       id="hero"
       ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden"
+      className="relative h-screen w-full overflow-hidden bg-dark-bg"
     >
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      />
+      {backgroundImage && (
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url("${backgroundImage}")` }}
+        />
+      )}
+
       <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/60 via-transparent to-transparent" />
 
-      <div className="relative z-10 h-full flex flex-col justify-end px-6 md:px-10 pb-16 md:pb-20">
+      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-16 md:px-10 md:pb-20">
         <span
           ref={labelRef}
-          className="text-warm-beige text-xs tracking-[0.1em] uppercase font-['Inter'] opacity-0 translate-y-4 mb-4"
+          className="mb-4 translate-y-4 font-['Inter'] text-xs uppercase tracking-[0.1em] text-warm-beige opacity-0"
         >
           {subtext}
         </span>
 
         <h1
           ref={headingRef}
-          className="text-warm-beige text-5xl md:text-7xl lg:text-8xl leading-[1.0] tracking-[0.04em] max-w-3xl opacity-0 translate-y-8"
+          className="max-w-3xl translate-y-8 text-5xl leading-[1.0] tracking-[0.04em] text-warm-beige opacity-0 md:text-7xl lg:text-8xl"
           style={{ whiteSpace: 'pre-line' }}
         >
           {headline}
@@ -91,13 +98,13 @@ export default function Hero({ data }: HeroProps) {
             href={finalButtonUrl}
             target={isExternalLink ? '_blank' : undefined}
             rel={isExternalLink ? 'noopener noreferrer' : undefined}
-            className="absolute bottom-16 md:bottom-20 right-6 md:right-10 flex items-center gap-3 cursor-pointer group"
+            className="group absolute bottom-16 right-6 flex cursor-pointer items-center gap-3 md:bottom-20 md:right-10"
             ref={ctaRef}
           >
-            <span className="text-warm-beige text-sm tracking-wide font-['Inter'] underline underline-offset-4 decoration-warm-beige/50 group-hover:decoration-warm-beige transition-colors">
+            <span className="font-['Inter'] text-sm tracking-wide text-warm-beige underline underline-offset-4 decoration-warm-beige/50 transition-colors group-hover:decoration-warm-beige">
               {buttonLabel}
             </span>
-            <div className="w-8 h-8 rounded-full border border-warm-beige/50 flex items-center justify-center group-hover:border-warm-beige transition-colors">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-warm-beige/50 transition-colors group-hover:border-warm-beige">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-warm-beige">
                 <path d="M3 2L9 6L3 10V2Z" fill="currentColor" />
               </svg>

@@ -1,6 +1,7 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
+import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 import { schemaTypes } from './schemaTypes'
 
 const singletonTypes = new Set([
@@ -20,7 +21,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      structure: (S) =>
+      structure: (S, context) =>
         S.list()
           .title('Content')
           .items([
@@ -62,9 +63,24 @@ export default defineConfig({
 
             S.divider(),
 
-            ...S.documentTypeListItems().filter(
-              (listItem) => !singletonTypes.has(listItem.getId() || '')
-            ),
+            orderableDocumentListDeskItem({
+              type: 'film',
+              title: 'Films',
+              S,
+              context,
+            }),
+
+            orderableDocumentListDeskItem({
+              type: 'testimonial',
+              title: 'Testimonials',
+              S,
+              context,
+            }),
+
+            ...S.documentTypeListItems().filter((listItem) => {
+              const id = listItem.getId() || ''
+              return !singletonTypes.has(id) && id !== 'film' && id !== 'testimonial'
+            }),
           ]),
     }),
     visionTool(),

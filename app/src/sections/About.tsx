@@ -16,31 +16,39 @@ export default function About({ data }: AboutProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(contentRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-        },
-        opacity: 0,
-        x: -40,
-        duration: 1.2,
-        ease: 'power3.out',
-      });
+      const section = sectionRef.current;
+      const content = contentRef.current;
+      const image = imageRef.current;
 
-      gsap.from(imageRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-        },
-        opacity: 0,
-        x: 40,
-        duration: 1.2,
-        ease: 'power3.out',
-      });
+      if (section && content) {
+        gsap.from(content, {
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+          },
+          opacity: 0,
+          x: -40,
+          duration: 1.2,
+          ease: 'power3.out',
+        });
+      }
+
+      if (section && image) {
+        gsap.from(image, {
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+          },
+          opacity: 0,
+          x: 40,
+          duration: 1.2,
+          ease: 'power3.out',
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [data]);
 
   const title = data?.title || 'About';
 
@@ -55,12 +63,12 @@ export default function About({ data }: AboutProps) {
   const imageUrl = data?.imageUrl;
 
   return (
-<section
-  id="about"
-  ref={sectionRef}
-  className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
-  style={{ backgroundColor: '#111111' }}
->
+    <section
+      id="about"
+      ref={sectionRef}
+      className="scroll-mt-24 w-full py-24 md:py-32 px-6 md:px-10"
+      style={{ backgroundColor: '#111111' }}
+    >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
         <div ref={contentRef}>
           <span className="text-cool-gray text-xs tracking-[0.1em] uppercase font-['Inter']">

@@ -4,6 +4,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ContactSection, SiteSettings } from '@/lib/types';
 import SocialIcons from '@/components/socialIcons';
 
+declare global {
+  interface Window {
+    grecaptcha?: {
+      reset: () => void;
+    };
+  }
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
 interface ContactProps {
@@ -15,23 +23,31 @@ export default function Contact({ data, siteSettings }: ContactProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [formVisible, setFormVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(contentRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 40,
-        duration: 1.2,
-        ease: 'power3.out',
-      });
+      const section = sectionRef.current;
+      const content = contentRef.current;
+
+      if (section && content) {
+        gsap.from(content, {
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+          },
+          opacity: 0,
+          y: 40,
+          duration: 1.2,
+          ease: 'power3.out',
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (formVisible && !document.getElementById('recaptcha-script')) {
@@ -43,6 +59,45 @@ export default function Contact({ data, siteSettings }: ContactProps) {
       document.body.appendChild(script);
     }
   }, [formVisible]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('https://formspree.io/f/mqenevqw', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        form.reset();
+        setSubmitSuccess(true);
+        
+        if (window.grecaptcha) {
+          window.grecaptcha.reset();
+        }
+      } else {
+        const result = await response.json();
+        if (result?.errors?.length) {
+          setSubmitError(result.errors.map((err: { message: string }) => err.message).join(', '));
+        } else {
+          setSubmitError('Something went wrong. Please try again.');
+        }
+      }
+    } catch {
+      setSubmitError('Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const headline = data?.headline || 'Ready to talk about your wedding film?';
   const subtext =
@@ -134,7 +189,7 @@ export default function Contact({ data, siteSettings }: ContactProps) {
 
             {formVisible && (
               <div className="mt-6 pt-6 border-t border-white/10">
-                <form action="https://formspree.io/f/mqenevqw" method="POST" className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-cool-gray text-xs tracking-[0.1em] uppercase mb-2 block font-['Inter']">
@@ -213,15 +268,28 @@ export default function Contact({ data, siteSettings }: ContactProps) {
 
                   <div
                     className="g-recaptcha"
-                    data-sitekey="6LfQovEqAAAAABN5jQ7gDmJzVWi6KXB7DBnYKRlv"
+                    data-sitekey="6LdWReAsAAAAADAUoZRvyWJs5VPTKZ1TcmymE_xK"
                   ></div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-warm-beige text-dark-bg px-6 py-3 text-sm tracking-[0.1em] uppercase font-medium font-['Inter'] rounded-sm hover:bg-cream transition-colors duration-300"
-                  >
-                    Send Details
-                  </button>
+                  {submitSuccess ? (
+                    <div className="w-full border border-green-500/30 bg-green-500/10 px-6 py-4 text-sm tracking-[0.05em] font-['Inter'] text-warm-beige rounded-sm text-center">
+                      Thanks. Your message has been sent.
+                    </div>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-warm-beige text-dark-bg px-6 py-3 text-sm tracking-[0.1em] uppercase font-medium font-['Inter'] rounded-sm hover:bg-cream transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? 'Sending...' : 'Send Details'}
+                    </button>
+                  )}
+
+                  {submitError && (
+                    <p className="text-red-300 text-sm font-['Inter']">
+                      {submitError}
+                    </p>
+                  )}
                 </form>
               </div>
             )}

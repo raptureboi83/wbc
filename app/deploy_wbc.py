@@ -129,7 +129,7 @@ def main() -> None:
         print("No commit created, continuing anyway.")
 
     run(["git", "push", "origin", GIT_BRANCH], cwd=str(repo_root))
-    run(["npm", "run", "build"], cwd=str(app_dir))
+    run(["cmd", "/c", "npm", "run", "build"], cwd=str(app_dir))
 
     if not dist_dir.exists():
         print(f"dist folder not found: {dist_dir}")

@@ -7,7 +7,8 @@ export const heroSectionQuery = groq`
     subtext,
     buttonLabel,
     buttonUrl,
-    "backgroundImageUrl": backgroundImage.asset->url
+    "backgroundImageUrl": backgroundImage.asset->url,
+    "backgroundVideoUrl": backgroundVideo.asset->url
   }
 `
 

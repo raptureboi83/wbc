@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import type { HeroSection } from '@/lib/types'
 
@@ -12,7 +12,10 @@ export default function Hero({ data }: HeroProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const ctaRef = useRef<HTMLAnchorElement>(null)
 
+  const [isMobile, setIsMobile] = useState(false)
+
   const backgroundImage = data?.backgroundImageUrl?.trim() ?? ''
+  const backgroundVideo = data?.backgroundVideoUrl?.trim() ?? ''
   const headline = data?.headline || 'Capturing\nYour Forever'
   const subtext = data?.subtext || 'A Love Story'
 
@@ -21,6 +24,19 @@ export default function Hero({ data }: HeroProps) {
   const showCta = buttonLabel !== ''
   const finalButtonUrl = buttonUrl !== '' ? buttonUrl : '#films'
   const isExternalLink = finalButtonUrl.startsWith('http')
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const useVideo = backgroundVideo !== '' && !isMobile
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -68,14 +84,27 @@ export default function Hero({ data }: HeroProps) {
       ref={sectionRef}
       className="relative h-screen w-full overflow-hidden bg-dark-bg"
     >
-      {backgroundImage && (
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url("${backgroundImage}")` }}
-        />
+      {useVideo ? (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src={backgroundVideo} type="video/mp4" />
+        </video>
+      ) : (
+        backgroundImage && (
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url("${backgroundImage}")` }}
+          />
+        )
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/60 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/80 via-dark-bg/40 to-transparent" />
 
       <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-16 md:px-10 md:pb-20">
         <span

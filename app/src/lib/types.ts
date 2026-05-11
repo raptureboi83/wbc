@@ -3,6 +3,7 @@ export interface HeroSection {
   headline: string
   subtext: string
   backgroundImageUrl?: string
+  backgroundVideoUrl?: string
   buttonLabel: string
   buttonUrl: string
 }

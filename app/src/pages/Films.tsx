@@ -31,7 +31,20 @@ export default function FilmsPage() {
   }, [])
 
   const handleReachOut = () => {
-    navigate('/#contact')
+    navigate('/')
+
+    window.setTimeout(() => {
+      const el = document.getElementById('contact')
+
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 120
+
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth',
+        })
+      }
+    }, 400)
   }
 
   return (

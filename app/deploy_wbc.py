@@ -16,6 +16,8 @@ APP_DIR = r"D:\wbc\app"
 GIT_BRANCH = "master"
 DELETE_REMOTE_EXTRA = True
 
+PROTECTED_REMOTE_FILES = {".htaccess"}
+
 
 def run(cmd: list[str], cwd: str | None = None, allow_fail: bool = False) -> subprocess.CompletedProcess:
     print(f"\n>>> {' '.join(cmd)}")
@@ -27,7 +29,7 @@ def run(cmd: list[str], cwd: str | None = None, allow_fail: bool = False) -> sub
 
 
 def ftp_mkdir_p(ftp: FTP, remote_path: str) -> None:
-    parts = [p for p in remote_path.split('/') if p]
+    parts = [p for p in remote_path.split("/") if p]
     current = ""
     for part in parts:
         current = f"{current}/{part}"
@@ -91,6 +93,10 @@ def upload_dir(ftp: FTP, local_dir: Path, remote_dir: str, delete_remote_extra: 
 
     if delete_remote_extra:
         for file_name in sorted(remote_files - local_files):
+            if file_name in PROTECTED_REMOTE_FILES:
+                print(f"Keeping protected remote file {posixpath.join(remote_dir, file_name)}")
+                continue
+
             remote_path = posixpath.join(remote_dir, file_name)
             print(f"Deleting remote file {remote_path}")
             try:

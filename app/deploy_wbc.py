@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import posixpath
 import subprocess
 import sys
@@ -11,8 +10,10 @@ FTP_HOST = "www.weddingsbychristian.com"
 FTP_USER = "chris@plansaver.ca"
 FTP_PASS = "Fyw3emyi!B1chjg85!"
 REMOTE_DIR = "/public_html/new"
-LOCAL_PROJECT_DIR = r"D:\\wbc\\app"
-GIT_BRANCH = "main"
+
+REPO_ROOT = r"D:\wbc"
+APP_DIR = r"D:\wbc\app"
+GIT_BRANCH = "master"
 DELETE_REMOTE_EXTRA = True
 
 
@@ -27,7 +28,7 @@ def run(cmd: list[str], cwd: str | None = None, allow_fail: bool = False) -> sub
 
 def ftp_mkdir_p(ftp: FTP, remote_path: str) -> None:
     parts = [p for p in remote_path.split('/') if p]
-    current = ''
+    current = ""
     for part in parts:
         current = f"{current}/{part}"
         try:
@@ -43,12 +44,12 @@ def ftp_list(ftp: FTP, remote_path: str) -> tuple[set[str], set[str]]:
     try:
         ftp.cwd(remote_path)
         for name, facts in ftp.mlsd():
-            if name in {'.', '..'}:
+            if name in {".", ".."}:
                 continue
-            kind = facts.get('type', '')
-            if kind == 'dir':
+            kind = facts.get("type", "")
+            if kind == "dir":
                 dirs.add(name)
-            elif kind == 'file':
+            elif kind == "file":
                 files.add(name)
     finally:
         ftp.cwd(current)
@@ -82,7 +83,7 @@ def upload_dir(ftp: FTP, local_dir: Path, remote_dir: str, delete_remote_extra: 
         local_path = local_dir / file_name
         remote_path = posixpath.join(remote_dir, file_name)
         print(f"Uploading {local_path} -> {remote_path}")
-        with open(local_path, 'rb') as fh:
+        with open(local_path, "rb") as fh:
             ftp.storbinary(f"STOR {remote_path}", fh)
 
     for dir_name in sorted(local_dirs):
@@ -104,29 +105,34 @@ def upload_dir(ftp: FTP, local_dir: Path, remote_dir: str, delete_remote_extra: 
 
 
 def main() -> None:
-    project_dir = Path(LOCAL_PROJECT_DIR)
-    dist_dir = project_dir / 'dist'
+    repo_root = Path(REPO_ROOT)
+    app_dir = Path(APP_DIR)
+    dist_dir = app_dir / "dist"
 
-    if FTP_USER.startswith('REPLACE_') or FTP_PASS.startswith('REPLACE_'):
-        print('Set FTP_USER and FTP_PASS in this script before running it.')
+    if FTP_USER.startswith("REPLACE_") or FTP_PASS.startswith("REPLACE_"):
+        print("Set FTP_USER and FTP_PASS in this script before running it.")
         sys.exit(1)
 
-    if not project_dir.exists():
-        print(f'Project directory not found: {project_dir}')
+    if not repo_root.exists():
+        print(f"Repo root not found: {repo_root}")
         sys.exit(1)
 
-    run(['git', 'status'], cwd=str(project_dir))
-    run(['git', 'add', '.'], cwd=str(project_dir))
+    if not app_dir.exists():
+        print(f"App directory not found: {app_dir}")
+        sys.exit(1)
 
-    commit = run(['git', 'commit', '-m', 'deploy'], cwd=str(project_dir), allow_fail=True)
+    run(["git", "status"], cwd=str(repo_root))
+    run(["git", "add", "-A"], cwd=str(repo_root))
+
+    commit = run(["git", "commit", "-m", "deploy"], cwd=str(repo_root), allow_fail=True)
     if commit.returncode != 0:
-        print('No commit created, continuing anyway.')
+        print("No commit created, continuing anyway.")
 
-    run(['git', 'push', 'origin', GIT_BRANCH], cwd=str(project_dir))
-    run(['npm', 'run', 'build'], cwd=str(project_dir))
+    run(["git", "push", "origin", GIT_BRANCH], cwd=str(repo_root))
+    run(["npm", "run", "build"], cwd=str(app_dir))
 
     if not dist_dir.exists():
-        print(f'dist folder not found: {dist_dir}')
+        print(f"dist folder not found: {dist_dir}")
         sys.exit(1)
 
     print(f"\nConnecting to FTP host {FTP_HOST}...")
@@ -135,8 +141,8 @@ def main() -> None:
         ftp.set_pasv(True)
         upload_dir(ftp, dist_dir, REMOTE_DIR, DELETE_REMOTE_EXTRA)
 
-    print('\nDone. Git pushed, build created, and dist uploaded.')
+    print("\nDone. Git pushed, build created, and dist uploaded.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

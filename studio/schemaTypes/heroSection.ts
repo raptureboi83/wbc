@@ -7,47 +7,60 @@ export const heroSection = defineType({
   fields: [
     defineField({
       name: 'headline',
-      title: 'Headline',
+      title: 'Hero Headline',
       type: 'string',
       validation: (Rule) => Rule.required(),
-      description: 'Main hero heading. You can use line breaks in the text if needed.',
     }),
     defineField({
       name: 'subtext',
-      title: 'Subtext',
+      title: 'Hero Subtext',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({
+      name: 'buttonLabel',
+      title: 'Button Label',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-      description: 'Small label above the main hero heading.',
+      description: 'Text shown on the CTA button (e.g., "Watch Our Reel")',
+    }),
+    defineField({
+      name: 'buttonUrl',
+      title: 'Button URL',
+      type: 'string',
+      description: 'Link destination. Use # anchors like #films or full URLs.',
     }),
     defineField({
       name: 'backgroundImage',
-      title: 'Background Image',
+      title: 'Hero Background Image',
       type: 'image',
       options: {
         hotspot: true,
       },
-      description: 'Background image shown behind the hero section.',
+      description: 'Main background image for the hero section. Used as fallback if video is set.',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'buttonLabel',
-      title: 'Reel Button Label',
-      type: 'string',
-      initialValue: 'Watch Our Reel',
-      description: 'Text shown on the reel button. If Reel Button URL is empty, the button will be hidden.',
-    }),
-    defineField({
-      name: 'buttonUrl',
-      title: 'Reel Button URL',
-      type: 'url',
-      description: 'Optional. Leave blank to hide the reel button.',
-      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      name: 'backgroundVideo',
+      title: 'Hero Background Video (Optional)',
+      type: 'file',
+      options: {
+        accept: 'video/mp4,video/webm',
+      },
+      description: `⚠️ OPTIONAL. Use only if you want motion instead of a static image.
+
+✅ DO:
+• Keep it 6–12 seconds max, looped
+• Use muted, compressed MP4 or WebM
+• Keep file size under 3MB (smaller is better)
+• Use subtle atmospheric clips (slow motion, no dialogue)
+
+❌ DON'T:
+• Upload 4K or uncompressed video
+• Use files over 5MB
+• Include audio or dialogue-dependent content
+• Use fast cuts or distracting motion
+
+The background image above will show as the poster/fallback.`,
     }),
   ],
-  preview: {
-    select: {
-      title: 'headline',
-      subtitle: 'subtext',
-      media: 'backgroundImage',
-    },
-  },
 })

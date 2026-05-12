@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { client } from '@/lib/sanity.client'
 import { filmsQuery, siteSettingsQuery } from '@/lib/queries'
 import type { Film, SiteSettings } from '@/lib/types'
@@ -68,15 +69,19 @@ export default function FilmsPage() {
                   </p>
 
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
-                    <a
-                      href="/"
+                    <Link
+                      to="/"
                       className="inline-flex items-center justify-center rounded-sm bg-warm-beige px-6 py-3 font-['Inter'] text-sm uppercase tracking-[0.1em] text-dark-bg transition-opacity duration-300 hover:opacity-90"
                     >
                       Back to home
-                    </a>
-                    <a href="/contact" className="inline-flex items-center justify-center rounded-sm border border-white/10 px-6 py-3 font-['Inter'] text-sm uppercase tracking-[0.1em] text-warm-beige transition-colors duration-300 hover:bg-white/5">
+                    </Link>
+
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center justify-center rounded-sm border border-white/10 px-6 py-3 font-['Inter'] text-sm uppercase tracking-[0.1em] text-warm-beige transition-colors duration-300 hover:bg-white/5"
+                    >
                       Reach out
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

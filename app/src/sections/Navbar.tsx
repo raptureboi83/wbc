@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import type { SiteSettings } from '@/lib/types';
-import SocialIcons from '@/components/socialIcons';
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import type { SiteSettings } from '@/lib/types'
+import SocialIcons from '@/components/socialIcons'
 
 interface NavbarProps {
-  siteSettings: SiteSettings | null;
+  siteSettings: SiteSettings | null
 }
 
 const navItems = [
@@ -14,75 +14,87 @@ const navItems = [
   { label: 'Testimonials', id: 'testimonials' },
   { label: 'Vendors', id: 'vendors' },
   { label: 'Contact', id: 'contact' },
-];
+]
 
 export default function Navbar({ siteSettings }: NavbarProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [scrolled, setScrolled] = useState(false);
-  const [visible, setVisible] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const lastScrollY = useRef(0);
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [scrolled, setScrolled] = useState(false)
+  const [visible, setVisible] = useState(true)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const lastScrollY = useRef(0)
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentY = window.scrollY;
-      setScrolled(currentY > 50);
+      const currentY = window.scrollY
+      setScrolled(currentY > 50)
 
       if (currentY > lastScrollY.current && currentY > 100 && !mobileOpen) {
-        setVisible(false);
+        setVisible(false)
       } else {
-        setVisible(true);
+        setVisible(true)
       }
 
-      lastScrollY.current = currentY;
-    };
+      lastScrollY.current = currentY
+    }
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [mobileOpen]);
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [mobileOpen])
 
   useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
+    setMobileOpen(false)
+  }, [location.pathname])
 
   const goToSection = (id: string) => {
-    setMobileOpen(false);
+    setMobileOpen(false)
+
+    if (id === 'contact') {
+      if (location.pathname === '/') {
+        const el = document.getElementById('contact')
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      } else {
+        window.location.href = '/#contact'
+      }
+      return
+    }
 
     if (location.pathname === '/') {
-      const el = document.getElementById(id);
+      const el = document.getElementById(id)
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     } else {
-      navigate(`/#${id}`);
+      navigate(`/#${id}`)
     }
-  };
+  }
 
   const handleLogoClick = () => {
-    setMobileOpen(false);
+    setMobileOpen(false)
 
     if (location.pathname === '/') {
-      const hero = document.getElementById('hero');
+      const hero = document.getElementById('hero')
       if (hero) {
-        hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        hero.scrollIntoView({ behavior: 'smooth', block: 'start' })
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     } else {
-      navigate('/#hero');
+      navigate('/#hero')
     }
-  };
+  }
 
-  const siteName = siteSettings?.siteName || 'Weddings By Christian';
-  const brandingMode = siteSettings?.brandingMode || 'text';
-  const logoUrl = siteSettings?.logoUrl;
-  const socialLinks = siteSettings?.socialLinks || [];
+  const siteName = siteSettings?.siteName || 'Weddings By Christian'
+  const brandingMode = siteSettings?.brandingMode || 'text'
+  const logoUrl = siteSettings?.logoUrl
+  const socialLinks = siteSettings?.socialLinks || []
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 h-20 flex items-center justify-between px-6 md:px-10 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 flex h-20 items-center justify-between px-6 transition-all duration-500 md:px-10 ${
           visible ? 'translate-y-0' : '-translate-y-full'
         } bg-dark-bg/70 backdrop-blur-md ${scrolled ? 'bg-dark-bg/90' : ''}`}
       >
@@ -99,25 +111,25 @@ export default function Navbar({ siteSettings }: NavbarProps) {
               className="h-14 w-auto object-contain"
             />
           ) : (
-            <span className="text-warm-beige text-xs tracking-[0.1em] uppercase font-medium font-['Inter']">
+            <span className="font-['Inter'] text-xs font-medium uppercase tracking-[0.1em] text-warm-beige">
               {siteName}
             </span>
           )}
         </button>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => goToSection(item.id)}
-              className="text-xs tracking-[0.1em] uppercase text-muted-foreground hover:text-warm-beige transition-colors duration-300 font-['Inter']"
+              className="font-['Inter'] text-xs uppercase tracking-[0.1em] text-muted-foreground transition-colors duration-300 hover:text-warm-beige"
             >
               {item.label}
             </button>
           ))}
 
           {socialLinks.length > 0 && (
-            <div className="ml-2 pl-4 border-l border-white/10">
+            <div className="ml-2 border-l border-white/10 pl-4">
               <SocialIcons socialLinks={socialLinks} />
             </div>
           )}
@@ -126,11 +138,11 @@ export default function Navbar({ siteSettings }: NavbarProps) {
         <button
           type="button"
           onClick={() => setMobileOpen((prev) => !prev)}
-          className="md:hidden flex items-center justify-center w-10 h-10 text-warm-beige"
+          className="flex h-10 w-10 items-center justify-center text-warm-beige md:hidden"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
         >
-          <div className="relative w-5 h-5">
+          <div className="relative h-5 w-5">
             <span
               className={`absolute left-0 top-[4px] h-px w-5 bg-current transition-all duration-300 ${
                 mobileOpen ? 'translate-y-[6px] rotate-45' : ''
@@ -151,20 +163,20 @@ export default function Navbar({ siteSettings }: NavbarProps) {
       </nav>
 
       {mobileOpen && (
-        <div className="fixed top-20 left-0 right-0 z-40 md:hidden bg-dark-bg/95 backdrop-blur-md border-t border-white/10 px-6 py-6">
+        <div className="fixed top-20 left-0 right-0 z-40 border-t border-white/10 bg-dark-bg/95 px-6 py-6 backdrop-blur-md md:hidden">
           <div className="flex flex-col gap-5">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => goToSection(item.id)}
-                className="text-left text-sm tracking-[0.1em] uppercase text-warm-beige font-['Inter']"
+                className="text-left font-['Inter'] text-sm uppercase tracking-[0.1em] text-warm-beige"
               >
                 {item.label}
               </button>
             ))}
 
             {socialLinks.length > 0 && (
-              <div className="pt-4 mt-2 border-t border-white/10">
+              <div className="mt-2 border-t border-white/10 pt-4">
                 <SocialIcons socialLinks={socialLinks} />
               </div>
             )}
@@ -172,5 +184,5 @@ export default function Navbar({ siteSettings }: NavbarProps) {
         </div>
       )}
     </>
-  );
+  )
 }

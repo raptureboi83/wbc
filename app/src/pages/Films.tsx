@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { client } from '@/lib/sanity.client'
 import { filmsQuery, siteSettingsQuery } from '@/lib/queries'
 import type { Film, SiteSettings } from '@/lib/types'
@@ -8,7 +7,6 @@ import Navbar from '@/sections/Navbar'
 import FeaturedWork from '@/sections/FeaturedWork'
 
 export default function FilmsPage() {
-  const navigate = useNavigate()
   const [films, setFilms] = useState<Film[]>([])
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null)
 
@@ -29,23 +27,6 @@ export default function FilmsPage() {
 
     fetchData()
   }, [])
-
-  const handleReachOut = () => {
-    navigate('/')
-
-    window.setTimeout(() => {
-      const el = document.getElementById('contact')
-
-      if (el) {
-        const y = el.getBoundingClientRect().top + window.pageYOffset - 120
-
-        window.scrollTo({
-          top: y,
-          behavior: 'smooth',
-        })
-      }
-    }, 400)
-  }
 
   return (
     <div className="min-h-screen bg-dark-bg text-foreground">
@@ -87,21 +68,15 @@ export default function FilmsPage() {
                   </p>
 
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/')}
+                    <a
+                      href="/"
                       className="inline-flex items-center justify-center rounded-sm bg-warm-beige px-6 py-3 font-['Inter'] text-sm uppercase tracking-[0.1em] text-dark-bg transition-opacity duration-300 hover:opacity-90"
                     >
                       Back to home
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleReachOut}
-                      className="inline-flex items-center justify-center rounded-sm border border-white/10 px-6 py-3 font-['Inter'] text-sm uppercase tracking-[0.1em] text-warm-beige transition-colors duration-300 hover:bg-white/5"
-                    >
+                    </a>
+                    <a href="/contact" className="inline-flex items-center justify-center rounded-sm border border-white/10 px-6 py-3 font-['Inter'] text-sm uppercase tracking-[0.1em] text-warm-beige transition-colors duration-300 hover:bg-white/5">
                       Reach out
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>

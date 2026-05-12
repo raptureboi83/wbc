@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { client } from '@/lib/sanity.client'
 import {
   heroSectionQuery,
@@ -30,6 +31,8 @@ import Testimonials from '../sections/Testimonials'
 import Vendors from '../sections/Vendors'
 import Contact from '../sections/Contact'
 
+const NAV_OFFSET = 96
+
 export default function Home() {
   const [heroData, setHeroData] = useState<HeroSection | null>(null)
   const [aboutData, setAboutData] = useState<AboutSection | null>(null)
@@ -39,6 +42,9 @@ export default function Home() {
   const [filmsData, setFilmsData] = useState<Film[]>([])
   const [contactData, setContactData] = useState<ContactSection | null>(null)
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null)
+
+  const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +60,6 @@ export default function Home() {
             client.fetch(contactSectionQuery),
             client.fetch(siteSettingsQuery),
           ])
-
 
         setHeroData(hero)
         setAboutData(about)
@@ -75,6 +80,28 @@ export default function Home() {
       document.documentElement.style.scrollBehavior = 'auto'
     }
   }, [])
+
+  useEffect(() => {
+    const targetId = location.state?.scrollTo as string | undefined
+    if (!targetId) return
+
+    const timeout = window.setTimeout(() => {
+      const el = document.getElementById(targetId)
+
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET
+
+        window.scrollTo({
+          top,
+          behavior: 'smooth',
+        })
+      }
+
+      navigate(location.pathname, { replace: true, state: null })
+    }, 150)
+
+    return () => window.clearTimeout(timeout)
+  }, [location, navigate])
 
   return (
     <div className="min-h-screen bg-dark-bg text-warm-beige overflow-x-hidden">

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import type { SiteSettings } from '@/lib/types'
 import SocialIcons from '@/components/socialIcons'
 
@@ -16,8 +16,28 @@ const navItems = [
   { label: 'Contact', id: 'contact' },
 ]
 
+const NAV_OFFSET = 96
+
+function getBasePath() {
+  const base = import.meta.env.BASE_URL || '/'
+  return base.endsWith('/') ? base : `${base}/`
+}
+
+function scrollWithOffset(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return false
+
+  const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET
+
+  window.scrollTo({
+    top,
+    behavior: 'smooth',
+  })
+
+  return true
+}
+
 export default function Navbar({ siteSettings }: NavbarProps) {
-  const navigate = useNavigate()
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [visible, setVisible] = useState(true)
@@ -46,29 +66,29 @@ export default function Navbar({ siteSettings }: NavbarProps) {
     setMobileOpen(false)
   }, [location.pathname])
 
+  useEffect(() => {
+    if (location.pathname !== '/') return
+    if (!location.hash) return
+
+    const id = location.hash.replace('#', '')
+
+    const timeout = window.setTimeout(() => {
+      scrollWithOffset(id)
+    }, 150)
+
+    return () => window.clearTimeout(timeout)
+  }, [location])
+
   const goToSection = (id: string) => {
     setMobileOpen(false)
 
-    if (id === 'contact') {
-      if (location.pathname === '/') {
-        const el = document.getElementById('contact')
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-      } else {
-        window.location.href = '/#contact'
-      }
+    if (location.pathname === '/') {
+      scrollWithOffset(id)
       return
     }
 
-    if (location.pathname === '/') {
-      const el = document.getElementById(id)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    } else {
-      navigate(`/#${id}`)
-    }
+    const base = getBasePath()
+    window.location.href = `${base}#${id}`
   }
 
   const handleLogoClick = () => {
@@ -76,14 +96,23 @@ export default function Navbar({ siteSettings }: NavbarProps) {
 
     if (location.pathname === '/') {
       const hero = document.getElementById('hero')
+
       if (hero) {
-        hero.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        const top = Math.max(hero.getBoundingClientRect().top + window.scrollY - 80, 0)
+
+        window.scrollTo({
+          top,
+          behavior: 'smooth',
+        })
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }
-    } else {
-      navigate('/#hero')
+
+      return
     }
+
+    const base = getBasePath()
+    window.location.href = `${base}#hero`
   }
 
   const siteName = siteSettings?.siteName || 'Weddings By Christian'
@@ -121,6 +150,7 @@ export default function Navbar({ siteSettings }: NavbarProps) {
           {navItems.map((item) => (
             <button
               key={item.id}
+              type="button"
               onClick={() => goToSection(item.id)}
               className="font-['Inter'] text-xs uppercase tracking-[0.1em] text-muted-foreground transition-colors duration-300 hover:text-warm-beige"
             >
@@ -168,6 +198,7 @@ export default function Navbar({ siteSettings }: NavbarProps) {
             {navItems.map((item) => (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => goToSection(item.id)}
                 className="text-left font-['Inter'] text-sm uppercase tracking-[0.1em] text-warm-beige"
               >
